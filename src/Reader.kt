@@ -14,6 +14,8 @@ class Reader {
     val SEVEN_STATE = 7
     val EIGHTH_STATE = 8
     val NINETH_STATE = 9
+    val TENTH_STATE = 10
+    val ELEVENT_STATE = 11
 
     var space = false // For when '=' is found
     var numFound = false
@@ -90,6 +92,10 @@ class Reader {
             numFound = true
             currentState = FIFTH_STATE
             this.print(char)
+        } else if (c == '.' && numFound) { // validate 0.0 and not .0
+            space = false
+            currentState = TENTH_STATE
+            this.print(c)
         } else if (char == ';') {
             finishProgram()
         } else {
@@ -142,6 +148,9 @@ class Reader {
             numFound = false
             currentState = SIXTH_STATE
             this.print(c)
+        } else if (c == '.' && numFound) { // validate 0.0 and not .0
+            currentState = ELEVENT_STATE
+            this.print(c)
         } else if (c == ';') {
             finishProgram()
         } else {
@@ -162,6 +171,26 @@ class Reader {
             this.print(c)
         } else if (c == ';') {
             finishProgram()
+        } else {
+            endProgram()
+        }
+    }
+
+    private fun validateTenth(c: char) {
+        if (c == ' ') { //0. 0 is not valid
+            endProgram()
+        } else if (numRegex.matches(c.toString())) {
+            currentState = FOURTH_STATE
+        } else {
+            endProgram()
+        }
+    }
+
+    private fun validateEleventh(c: char) {
+        if (c == ' ') { //0. 0 is not valid
+            endProgram()
+        } else if (numRegex.matches(c.toString())) {
+            currentState = SEVEN_STATE
         } else {
             endProgram()
         }
